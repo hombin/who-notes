@@ -25,21 +25,23 @@
     - [分区](####分区) [挂载](####挂载) [扩容](####扩容)
   - [网络配置](###网络配置)
     - [查看网络](####查看网络) [测试网络](####测试网络) [DNS](####DNS)
-  - 进程管理
-    - 查看进程 终止进程 进程树
-  - 包管理
-    - RPM YUM
+  - [进程管理](###进程管理)
+    - [查看进程](####查看进程) [终止进程](####终止进程) [进程树](####进程树)
+  - [包管理](###包管理)
+    - [RPM](####RPM) [YUM](####YUM)
   - Shell 编程（待补充）
     - 脚本格式 变量 环境变量 预定义变量
     - 位置参数 运算符 条件判断 流程判断
     - 循环 控制台输入 函数
-- Linux 系统
-  - 防火墙
-    - iptable firewall
-  - 日志控制
-    - 系统日志 日志轮替 内存日志
-  - 备份与恢复
-    - dump restore
+- [Linux 系统](##Linux-系统)
+  - [防火墙](###防火墙)
+    - [iptables](####iptables) [firewalld](####firewalld)
+  - [日志控制](###日志控制)
+    - [系统日志](####系统日志) [日志轮转](####日志轮转) [用户日志](####用户日志) [开机日志](####开机日志)
+  - [备份与恢复](###备份与恢复)
+    - [dump](####dump) [restore](####restore)
+  - [系统检查](###系统检查)
+    - [chkconfig](####chkconfig)
 
 
 
@@ -931,7 +933,7 @@
    第5字段表示文件大小，如果是一个文件夹（目录），则表示该文件夹的大小。但不是文件夹以及它下面的文件的总大小。
    
    # Jul 29 17:29 文件（目录）最近访问（修改）时间
-   文件创建的时间可以通过touch命令来修改。
+   文件创建的时间可以通过 touch 命令来修改。
    
    # conn_eip_clickhouse.py 文件名 目录名
    如果是一个符号链接，那么会有一个 [->] 箭头符号，后面说明它指向的文件或目录
@@ -1189,9 +1191,9 @@
     # n新建分区
     # 		p选择主分区
     # 		e选择扩展分区
-    #        1选择分区号
-    #        		选择初始位置，默认为1
-    #        		选择结束为止，默认为磁盘结尾
+    # 			1选择分区号
+    # 				选择初始位置，默认为1
+    # 				选择结束为止，默认为磁盘结尾
     ```
 
 3. 格式化分区
@@ -1203,7 +1205,7 @@
     mkfs.ext4 /dev/vdb1
     ```
 
-4. 查看可用 分区
+4. 查看 可用分区
 
     ```shell
     blkid
@@ -1652,27 +1654,26 @@
     ```shell
     # vim /etc/name.conf
     options {
-    listen-on port 53 { 127.0.0.1; };      //设置named服务器监听端口及IP地址
+    listen-on port 53 { 127.0.0.1; };  //设置named服务器监听端口及IP地址
     listen-on-v6 port 53 { ::1; };
-    directory       "/var/named";    //设置区域数据库文件的默认存放地址
+    directory       "/var/named";   //设置区域数据库文件的默认存放地址
     dump-file       "/var/named/data/cache_dump.db";
     statistics-file "/var/named/data/named_stats.txt";
     memstatistics-file "/var/named/data/named_mem_stats.txt";
     
     allow-query     { localhost; };   //允许DNS查询客户端
     allow-query-cache { any; };
-    };
     logging {
-    channel default_debug {
-    file "data/named.run";
-    severity dynamic;
-    };
+      channel default_debug {
+        file "data/named.run";
+        severity dynamic;
+      };
     };
     view localhost_resolver {
-    match-clients      { any; };
-    match-destinations { any; };
-    recursion yes;                  //设置允许递归查询
-    include "/etc/named.rfc1912.zones";
+      match-clients      { any; };
+      match-destinations { any; };
+      recursion yes;   //设置允许递归查询
+      include "/etc/named.rfc1912.zones";  //辅助区域文件
     };
     ```
 
@@ -1685,13 +1686,228 @@
 #### 查看进程
 
 1. ps 命令
-2. 
+
+    ```shell
+    ps [参数]
+    
+    # 参数说明
+    -a 显示现行终端机下的所有程序，包括其他用户的程序。
+    -A 显示所有程序。
+    -c 列出程序时，显示每个程序真正的指令名称，而不包含路径，选项或常驻服务的标示。
+    -C <指令名称> 指定执行指令的名称，并列出该指令的程序的状况。
+    -d 显示所有程序，但不包括阶段作业领导者的程序。
+    -e 列出程序时，显示每个程序所使用的环境变量。
+    -f 显示 UID,PPIP,C 与 STIME 栏位。用ASCII字符显示树状结构，表达程序间的相互关系。
+    -g <群组名称> 此选项的效果和指定"-G"选项相同。
+    -G <群组识别码> 列出属于该群组的程序的状况，也可使用群组名称来指定。
+    -H 显示树状结构，表示程序间的相互关系。
+    -j 采用工作控制的格式显示程序状况。
+    -l 采用详细的格式来显示程序状况。
+    -n 以数字来表示 USER 和 WCHAN 栏位。
+    -p <程序识别码> 指定程序识别码，并列出该程序的状况。
+    -s <阶段作业> 指定阶段作业的程序识别码，并列出隶属该阶段作业的程序的状况。
+    -t <终端机编号> 指定终端机编号，并列出属于该终端机的程序的状况。
+    -T 显示现行终端机下的所有程序。
+    -u <用户识别码> 列出属于该用户的程序的状况，也可使用用户名称来指定。
+    -v 采用虚拟内存的格式显示程序状况。
+    -w 采用宽阔的格式来显示程序状况。　
+    -x 显示所有程序，不以终端机来区分。
+    -y 配合选项"-l"使用时，不显示 F(flag) 栏位，并以 RSS 栏位取代 ADDR 栏位。
+    
+    --cols<每列字符数> 设置每列的最大字符数。
+    --columns<每列字符数> 此选项的效果和指定"--cols"选项相同。
+    --cumulative 此选项的效果和指定"S"选项相同。
+    --deselect 此选项的效果和指定"-N"选项相同。
+    --forest 此选项的效果和指定"f"选项相同。
+    --headers 重复显示标题列。
+    --help 在线帮助。
+    --info 显示排错信息。
+    --lines<显示列数> 设置显示画面的列数。
+    --no-headers 此选项的效果和指定"h"选项相同，只在列表格式方面稍有差异。
+    --group<群组名称> 此选项的效果和指定"-G"选项相同。
+    --Group<群组识别码> 此选项的效果和指定"-G"选项相同。
+    --pid<程序识别码> 此选项的效果和指定"-p"选项相同。
+    --rows<显示列数> 此选项的效果和指定"--lines"选项相同。
+    --sid<阶段作业> 此选项的效果和指定"-s"选项相同。
+    --tty<终端机编号> 此选项的效果和指定"-t"选项相同。
+    --user<用户名称> 此选项的效果和指定"-u"选项相同。
+    --User<用户识别码> 此选项的效果和指定"-U"选项相同。
+    --version 此选项的效果和指定"-V"选项相同。
+    --widty<每列字符数> 此选项的效果和指定"-cols"选项相同。
+    ```
+
+    ```shell
+    # 查看进程的 PID、名称以及 CPU 占用率
+    ps axo pid,comm,pcpu
+    # 显示所有进程信息
+    ps -A
+    # 显示指定用户信息
+    ps -u root
+    # 查看线程数
+    ps -efL
+    # 显示所有进程信息，连同命令行
+    ps -ef
+    # 显示进程运行的时间
+    ps -e -o pid,comm,etime
+    # 查看named进程详细信息
+    ps -aux | grep named
+    # 通过进程 id 获取服务名称
+    ps -o command -p 91730 | sed -n 2p
+    # 通过名字或命令搜索进程
+    ps -C nginx
+    # 用树的风格显示进程的层次关系
+    ps -f --forest -C nginx
+    # 查看进程并按内存使用大小排列
+    ps -e -o "%C : %p :%z : %a"|sort -k5 -nr
+    ```
+
+2. top 命令
+
+    ```shell
+    # 提供了运行中系统的动态实时视图
+    top
+    ```
+
+3. htop 命令（可互动的进程查看器）
+
+    ```shell
+    # htop 官网：http://htop.sourceforge.net/
+    # 相比 top 优点
+    # 可以横向或纵向滚动浏览进程列表，以便看到所有的进程和完整的命令行。
+    # 在启动上，比top 更快。
+    # 杀进程时不需要输入进程号。
+    # 支持鼠标操作。
+    
+    # 下载 htop （非内部程序，需要安装）
+    yum install htop
+    # 启动 htop
+    htop
+    
+    # 参数
+    -C --no-color               使用单色配色方案
+    -d --delay=DELAY            设置更新之间的延迟，在十秒
+    -s --sort-key=COLUMN        纵列排序(try --sort-key=help for a list)
+    -u --user=USERNAME          只显示一个指定用户的进程
+    -p --pid=PID,[,PID,PID...]  只显示给用户
+    -h --help                   打印此命令帮助
+    -v --version                打印版本信息
+    ```
+
+4. atop 命令（监控Linux系统资源与进程的工具）
+
+    ```shell
+    # 官方手册 http://www.atoptool.nl/download/man_atop-1.pdf
+    # 下载 atop （非内部程序，需要安装）
+    yum install atop
+    atop [选项] [参数]
+    
+    # 说明
+    ATOP	该列显示了主机名、信息采样日期和时间点
+    PRC		该列显示进程整体运行情况
+    CPU		该列显示 CPU 整体（即多核 CPU 作为一个整体 CPU 资源）的使用情况
+    CPL		该列显示 CPU 负载情况
+    MEM		该列指示内存的使用情况
+    SWP		该列指示交换空间的使用情况
+    PAG		该列指示虚拟内存分页情况
+    DSK		该列指示磁盘使用情况，每一个磁盘设备对应一列
+    NET		多列 NET 展示了网络状况，包括传输层（TCP 和 UDP）、IP 层以及各活动的网口信息
+    ```
 
 
 
 #### 终止进程
 
+1. kill 命令
 
+    ```shell
+    kill [-s sigspec | -n signum | -sigspec] pid | jobspec ...
+    kill -l [sigspec]
+    
+    -s sig    信号名称。
+    -n sig    信号名称对应的数字。
+    -l        列出信号名称。如果在该选项后提供了数字那么假设它是信号名称对应的数字。
+    -L        等价于-l选项。
+    
+    # 下面是常用的信号。
+    # 只有第9种信号(SIGKILL)才可以无条件终止进程，其他信号进程都有权利忽略。
+    HUP     1    终端挂断
+    INT     2    中断（同 Ctrl + C）
+    QUIT    3    退出（同 Ctrl + \）
+    KILL    9    强制终止
+    TERM   15    终止
+    CONT   18    继续（与STOP相反，fg/bg命令）
+    STOP   19    暂停（同 Ctrl + Z）
+    ```
+
+    ```shell
+    # 中止信号
+    kill -s STOP 181357
+    # jobs -l
+    # [1]+ 181537 Stopped (signal)        sleep 90
+    
+    # 继续信号
+    kill -s CONT 181357
+    # jobs -l
+    # [1]+ 181537 Running                 sleep 90 &
+    ```
+
+2. pkill 命令
+
+    ```shell
+    pkill [选项][参数]
+    
+    # 参数说明
+    -o 仅向找到的最小（起始）进程号发送信号；
+    -n 仅向找到的最大（结束）进程号发送信号；
+    -P 指定父进程号发送信号；
+    -g 指定进程组；
+    -t 指定开启进程的终端。
+    ```
+
+    ```shell
+    # kill 命令对应的是 PID，pkill 对应的是 command
+    pgrep -l gaim
+    2989 gaim
+    pkill gaim
+    ```
+
+3. killall 命令
+
+    ```shell
+    # killall 用来杀死所有同名进程
+    killall [选项] [参数]
+    
+    # 参数说明
+    -e --exact 对长名称进行精确匹配；
+    -I --ignore-case 忽略大小写的不同；
+    -g --process-group 杀死进程所属的进程组；
+    -i --interactive 交互式杀死进程，杀死进程前需要进行确认；
+    -l --list 打印所有已知信号列表；
+    -q --quite 如果没有进程被杀死。则不输出任何信息；
+    -r --regexp 使用正规表达式匹配要杀死的进程名称；
+    -s --signal 用指定的进程号代替默认信号；
+    -u --user 杀死指定用户的进程。
+    ```
+
+    ```shell
+    # 杀死所有 vi 进程
+    killall vi
+    # 强制杀死所有 php-fpm 进程
+    killall -9 php-fpm
+    ```
+
+    
+
+4. top 命令终止进程
+
+    ```shell
+    # top 面板
+    top
+    # 输入 k 进入 kill 功能，输入对应 pid 可以结束指定进程
+    PID to signal/kill [default pid = 24148] <pid>
+    ```
+
+    
 
 
 
@@ -1753,11 +1969,136 @@
 
 #### RPM
 
+1. rpm 介绍
 
+    ```shell
+    rpm（英文全拼：redhat package manager） 原本是 Red Hat Linux 发行版专门用来管理 Linux 各项套件的程序，由于它遵循 GPL 规则且功能强大方便，因而广受欢迎。逐渐受到其他发行版的采用。RPM 套件管理方式的出现，让 Linux 易于安装，升级，间接提升了 Linux 的适用度。
+    ```
+
+2. rpm 命令
+
+    ```shell
+    rpm [选项...]
+    
+    # 参数说明
+    -a 查询所有套件；
+    -b <完成阶段><套件档>+ 或 -t <完成阶段><套件档>+ 设置包装套件的完成阶段，并指定套件档的文件名称；
+    -c 只列出组态配置文件，本参数需配合"-l"参数使用；
+    -d 只列出文本文件，本参数需配合"-l"参数使用；
+    -e <套件档> 或 --erase<套件档> 删除指定的套件；
+    -f <文件>+ 查询拥有指定文件的套件；
+    -h --hash 套件安装时列出标记；
+    -i 显示套件的相关信息；
+    -i <套件档>或 --install<套件档> 安装指定的套件档；
+    -l 显示套件的文件列表；
+    -p <套件档>+ 查询指定的 RPM 套件档；
+    -q 使用询问模式，当遇到任何问题时，rpm 指令会先询问用户；
+    -R 显示套件的关联性信息；
+    -s 显示文件状态，本参数需配合"-l"参数使用；
+    -U <套件档> 或 --upgrade<套件档> 升级指定的套件档；
+    -v 显示指令执行过程；
+    ```
+
+3. rpm 实例
+
+    ```shell
+    # 安装程序
+    rpm -ivh <your-package.rpm>
+    # 卸载程序
+    rpm -e <your-package.rpm>
+    # 列出所有 rpm 包
+    rpm -qa
+    # 列出某个 rpm 包的全名
+    rpm -q tree
+    ```
+
+4. rpm 仓库
+
+    ```shell
+    # 重构 rpm 仓库
+    cd /var/lib/rpm
+    rm -f *db.*
+    rpm --rebuilddb
+    ```
+
+    
 
 #### YUM
 
+1. yum 介绍
 
+    ```shell
+    yum（Yellow dog Updater, Modified）是在 Fedora 和 RedHat 以及 SUSE 中基于 rpm 的软件包管理器，它可以使系统管理人员交互和自动化地更新与管理 RPM 软件包，能够从指定的服务器自动下载 RPM 包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软体包，无须繁琐地一次次下载、安装。
+    ```
+
+2. yum 命令
+
+    ```shell
+    yum [options] [command] [package ...]
+    
+    # 参数说明
+    options 可选，选项包括-h（帮助），-y（当安装过程提示选择全部为 "yes"），-q（不显示安装的过程）等等。
+    command 要进行的操作命令。
+    package 安装的包名或者搜索的关键字。
+    ```
+
+3. yum 实例
+
+    ```shell
+    # 安装指定的安装包 package1
+    yum install <package1>
+    # 安装程序组 group1
+    yum groupinsall <group1>
+    
+    # 更新所有安装包
+    yum update
+    # 更新指定的安装包 package1
+    yum update <package1>
+    
+    # 显示安装包信息 package1
+    yum info <package1>
+    # 显示所有已经安装和可以安装的程序包
+    yum list
+    # 显示指定程序包安装情况 package1
+    yum list <package1>
+    # 显示程序组 group1 信息
+    yum groupinfo <group1>
+    # 根据关键字 keyword 查找安装包
+    yum search <keyword>
+    
+    # 删除程序包 package1
+    yum remove <package1>
+    # 删除程序组 group1
+    yum groupremove <group1>
+    # 查看程序 package1 依赖情况
+    yum deplist <package1>
+    
+    # 清除缓存目录（/var/cache/yum）下的软件包
+    yum clean packages
+    # 清除缓存目录（/var/cache/yum）下的 headers
+    yum clean headers
+    # 清除缓存目录（/var/cache/yum）下旧的 headers
+    yum clean oldheaders
+    
+    # 生成缓存
+    yum clean all
+    yum makecache
+    ```
+
+4. yum 换源
+
+    ```shell
+    # 备份原有的源文件
+    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+    # 下载 替换的源 repo 文件（国内比较稳定的源有 163/中科大/阿里云 等）
+    wget http://mirrors.163.com/.help/CentOS7-Base-163.repo
+    wget http://mirrors.aliyun.com/repo/CentOS-7.repo
+    # 重命名 repo 文件
+    mv CentOS6-Base-163.repo CentOS-Base.repo
+    mv CentOS-7.repo CentOS-Base.repo
+    ```
+
+    
 
 
 
@@ -1765,11 +2106,528 @@
 
 ### 防火墙
 
+#### iptables
+
+1. iptables 介绍
+
+    ```shell
+    iptables 是 Linux 上常用的防火墙软件，是 netfilter 项目的一部分。可以直接配置，也可以通过许多前端和图形界面配置。
+    ```
+
+2. iptables 命令
+
+    ```shell
+    iptables [选项] [参数]
+    
+    # 参数说明
+    -t, --table 对指定的表 table 进行操作， table 必须是 raw，nat，filter，mangle 中的一个。默认的是 filter 表。
+    # 通用匹配：源地址目标地址的匹配
+    -p：指定要匹配的数据包协议类型；
+    -s, --source [!] address[/mask] 把指定的一个／一组地址作为源地址，按此规则进行过滤。
+    -d, --destination [!] address[/mask] 地址格式同上，但这里是指定地址为目的地址，按此进行过滤。
+    -i, --in-interface [!] <网络接口name> 指定数据包的来自来自网络接口。同前面类似，"!" 表示取反。
+    -o, --out-interface [!] <网络接口name> 指定数据包出去的网络接口。只对 OUTPUT，FORWARD，POSTROUTING 三个链起作用。
+    # 查看管理命令
+    -L, --list [chain] 列出链 chain 上面的所有规则，如果没有指定链，列出表上所有链的所有规则。
+    # 规则管理命令
+    -A, --append chain rule-specification 在指定链 chain 的末尾插入指定的规则。
+    -I, --insert chain [rulenum] rule-specification 在链 chain 中的指定位置插入一条或多条规则。
+    -D, --delete chain rule-specification -D, --delete chain rulenum 在指定的链 chain 中删除一个或多个指定规则。
+    -R <num> Replays替换/修改第几条规则
+    # 链管理命令（这都是立即生效的）
+    -P, --policy chain target 为指定的链 chain 设置策略 target。注意，只有内置的链才允许有策略，用户自定义的是不允许的。
+    -F, --flush [chain] 清空指定链 chain 上面的所有规则。如果没有指定链，清空该表上所有链的所有规则。
+    -N, --new-chain chain 用指定的名字创建一个新的链。
+    -X, --delete-chain [chain] 删除指定的链，这个链必须没有被其它任何规则引用。如果没有指定链名，则会删除该表中所有非内置的链。
+    -E, --rename-chain old-chain new-chain 用指定的新名字去重命名指定的链。这并不会对链内部造成任何影响。
+    -Z, --zero [chain] 把指定链，或者表中的所有链上的所有计数器清零。
+    -j, --jump target <指定目标> 即满足某条件时该执行什么动作。target 可以是内置的目标，比如 ACCEPT；也可以是用户自定义的链。
+    -h 显示帮助信息。
+    ```
+
+3. iptables 规则链路
+
+    ```shell
+    # 工作机制 - 规则链路
+    规则链名包括（也被称为五个钩子函数（hook functions））
+    
+    INPUT链				处理输入数据包
+    OUTPUT链				处理输出数据包
+    FORWARD链			处理转发数据包
+    PREROUTING链		用于目标地址转换（DNAT）
+    POSTOUTING链		用于源地址转换（SNAT）
+    ```
+
+    ```shell
+    
+                                 ┏╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍┓
+     ┌───────────────┐           ┃    Network    ┃
+     │ table: filter │           ┗━━━━┳━━━━┛
+     │ chain: INPUT  │◀────┐             │
+     └───────┬───────┘     │             ▼
+             │             │   ┌───────────────────┐
+      ┌┅┅┅ ▼┅┅┅┐      │   │ table: nat        │
+      │local process│      │   │ chain: PREROUTING │
+      └┅┅┅┅┅┅┅┅┘      │   └─────────┬─────────┘
+             │             │             │
+             ▼            │             ▼               ┌─────────────────┐
+    ┅┅┅┅┅┅┅┅┅┅      │     ┅┅┅┅┅┅┅┅┅┅┅      │table: nat       │
+     Routing decision      └───── outing decision ─────▶│chain: PREROUTING │
+    ┅┅┅┅┅┳┅┅┅┅            ┅┅┅┅┅┅┅┅┅┅┅      └────────┬────────┘
+             │                                                    │
+             ▼                                                   │
+     ┌───────────────┐                                            │
+     │ table: nat    │           ┅┅┅┅┅┅┅┅┅┅┅               │
+     │ chain: OUTPUT │    ┌─────▶ outing decision ◀──────────────┘
+     └───────┬───────┘    │      ┅┅┅┅┅┳┅┅┅┅┅
+             │            │               │
+             ▼            │              ▼
+     ┌───────────────┐    │    ┌────────────────────┐
+     │ table: filter │    │    │ chain: POSTROUTING │
+     │ chain: OUTPUT ├────┘    └──────────┬─────────┘
+     └───────────────┘                    │
+                                          ▼
+                                 ┏╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍┓
+                                 ┃    Network    ┃
+                                 ┗━━━━━━━━━┛
+    ```
+
+5. iptables 实例
+
+    ```shell
+    # 清空所有的防火墙规则
+    iptables -F
+    # 删除用户自定义的空链
+    iptables -X
+    # 清空计数
+    iptables -Z
+    
+    # 22 为你的 ssh 端口
+    # -s 192.168.1.0/24 表示允许这个网段的机器来连接，其它网段的 ip 地址是登陆不了你的机器的。 
+    # -j ACCEPT 表示接受这种请求。
+    iptables -A INPUT -s 192.168.1.0/24 -p tcp --dport 22 -j ACCEPT
+    
+    # 允许本地回环地址 127.0.0.1，是本机上使用的，它进与出设置为允许
+    iptables -A INPUT -i lo -j ACCEPT
+    iptables -A OUTPUT -o lo -j ACCEPT
+    ```
+
+6. iptstate 命令
+
+    ```shell
+    # iptstate 查看 iptables 状态
+    iptstate [选项]
+    
+    -b 指定输出信息的排序规则；
+    -d 不动态地改变窗口大小；
+    -f 过滤本地回送信息；
+    -l 将 ip 地址解析为域名；
+    -L 隐藏于 DNS 查询相关状态；
+    -r 指定刷新屏幕的频率；
+    -R 反序排列；
+    -s 单次运行模式；
+    -t 显示汇总信息。
+    ```
+
+    
+
+#### firewalld
+
+1. firewalld 介绍
+
+    ```shell
+    firewalld 是 centos7 的一大特性，最大的好处有两个：支持动态更新，不用重启服务；第二个就是加入了防火墙的 zone 概念。
+    
+    firewalld跟iptables比起来至少有两大好处：
+    1. firewalld可以动态修改单条规则，而不需要像iptables那样，在修改了规则后必须得全部刷新才可以生效。
+    2. firewalld在使用上要比iptables人性化很多，即使不明白“五张表五条链”而且对TCP/IP协议也不理解也可以实现大部分功能。
+    
+    firewalld 自身并不具备防火墙的功能，而是和 iptables 一样需要通过内核的 netfilter 来实现，也就是说 firewalld 和 iptables 一样，它们的作用都是用于维护规则，而真正使用规则的是内核的 netfilter，只是 firewalld 和 iptables 的结构以及使用方法不同。
+    ```
+
+2. firewall-cmd 命令
+
+    ```shell
+    firewall-cmd [选项 ... ]
+    
+    # 参数说明
+    -h, --help    # 显示帮助信息。
+    -V, --version # 显示版本信息。 （这个选项不能与其他选项组合）
+    -q, --quiet   # 不打印状态消息。
+    
+    --state                # 显示 firewalld 的状态；
+    --reload               # 不中断服务的重新加载；
+    --complete-reload      # 中断所有连接的重新加载；
+    --runtime-to-permanent # 将当前防火墙的规则永久保存；
+    --check-config         # 检查配置正确性。
+    
+    --get-log-denied         # 获取记录被拒绝的日志；
+    --set-log-denied=<value> # 设置记录被拒绝的日志，只能为 'all','unicast','broadcast','multicast','off' 其中的一个；
+    ```
+
+3. firewall-cmd 实例
+
+    ```shell
+    # 安装 firewalld
+    yum install firewalld firewall-config
+    
+    firewall-cmd --version  # 查看版本
+    firewall-cmd --help     # 查看帮助
+    
+    # 查看设置
+    firewall-cmd --state  # 显示状态
+    firewall-cmd --get-active-zones  # 查看区域信息
+    firewall-cmd --get-zone-of-interface=eth0  # 查看指定接口所属区域
+    firewall-cmd --panic-on  # 拒绝所有包
+    firewall-cmd --panic-off  # 取消拒绝状态
+    firewall-cmd --query-panic  # 查看是否拒绝
+    
+    firewall-cmd --reload # 更新防火墙规则
+    firewall-cmd --complete-reload
+    # 两者的区别就是第一个无需断开连接，就是firewalld特性之一动态添加规则，第二个需要断开连接，类似重启服务
+    
+    
+    # 将接口添加到区域，默认接口都在public
+    firewall-cmd --zone=public --add-interface=eth0
+    # 永久生效再加上 --permanent 然后reload防火墙
+     
+    # 设置默认接口区域，立即生效无需重启
+    firewall-cmd --set-default-zone=public
+    
+    # 查看所有打开的端口：
+    firewall-cmd --zone=dmz --list-ports
+    # 加入一个端口到区域：
+    firewall-cmd --zone=dmz --add-port=8080/tcp
+    
+     
+    # 打开一个服务，类似于将端口可视化，服务需要在配置文件中添加
+    firewall-cmd --zone=work --add-service=smtp
+    # 移除服务
+    firewall-cmd --zone=work --remove-service=smtp
+    
+    # 显示支持的区域列表
+    firewall-cmd --get-zones
+    # 查看当前区域
+    firewall-cmd --get-active-zones
+    # 设置当前区域的接口
+    firewall-cmd --get-zone-of-interface=enp03s
+    # 显示所有公共区域（public）
+    firewall-cmd --zone=public --list-all
+    # 临时修改网络接口（enp0s3）为内部区域（internal）
+    firewall-cmd --zone=internal --change-interface=enp03s
+    # 永久修改网络接口（enp03s）为内部区域（internal）
+    firewall-cmd --permanent --zone=internal --change-interface=enp03s
+    ```
+
+4. firewalld 端口管理
+
+    ```shell
+    # 打开 443/TCP 端口
+    firewall-cmd --add-port=443/tcp
+    
+    # 永久打开 3690/TCP 端口
+    firewall-cmd --permanent --add-port=3690/tcp
+    
+    # 重新加载
+    firewall-cmd --reload
+    
+    # 查看防火墙，添加的端口也可以看到
+    firewall-cmd --list-all
+    ```
+
+5. 伪装 IP
+
+    ```shell
+    firewall-cmd --query-masquerade 	# 检查是否允许伪装 IP
+    firewall-cmd --add-masquerade   	# 允许防火墙伪装 IP
+    firewall-cmd --remove-masquerade	# 禁止防火墙伪装 IP
+    ```
+
+
+
 ### 日志控制
+
+#### 系统日志
+
+1. linux 日志守护进程 syslog
+
+    ```shell
+    大部分Linux发行版默认的日志守护进程为 syslog，位于 /etc/syslog 或 /etc/syslogd，默认配置文件为 /etc/syslog.conf，
+    任何希望生成日志的程序都可以向 syslog 发送信息。 
+    ```
+
+2. 常见日志文件
+
+    | 文件 / 目录         | 说明                                                         |
+    | ------------------- | ------------------------------------------------------------ |
+    | /var/log/boot.log   | 开启或者重启的日志                                           |
+    | /var/log/cron       | 计划任务日志                                                 |
+    | /var/log/maillog    | 邮件日志。                                                   |
+    | /var/log/messages   | 该日志文件是许多进程日志文件的汇总，从该文件可以看出任何入侵企图或成功的入侵。 |
+    | /var/log/httpd 目录 | Apache HTTP 服务日志。                                       |
+    | /var/log/samba 目录 | samba 软件日志                                               |
+
+3. logger 命令
+
+    ```shell
+    logger [-i] [-f filename] [-p priority] [-t tag] [message...]
+    
+    # 参数说明
+    -f 将 filename 文件的内容作为日志
+    -i 每行都记录 logger 进程的 ID
+    -p 指定优先级，默认优先级是 user.notice
+    -t 使用指定 tag 标签标记每一个记录行
+    # message
+    message 要写入的日志内容，多条日志以空格为分隔；
+    # 如果没有指定日志内容，并且 -f filename 选项为空，那么会把标准输入作为日志内容。
+    ```
+
+    ```shell
+    # 将 ping 命令结果写入日志
+    ping 192.168.0.1 | logger -it logger_test -p local3.notice&
+    # 查看 ping 日志
+    tail -f /var/log/userlog
+    ```
+
+    
+
+
+
+#### 日志轮转
+
+1. 日志轮转 介绍
+
+    ```shell
+    日志转储也叫日志回卷或日志轮转。Linux中的日志通常增长很快，会占用大量硬盘空间，需要在日志文件达到指定大小时分开存储。
+    
+    syslog 只负责接收日志并保存到相应的文件，但不会对日志文件进行管理，因此经常会造成日志文件过大，尤其是WEB服务器，轻易就能超过1G，给检索带来困难。
+    
+    大多数Linux发行版使用 logrotate 或 newsyslog 对日志进行管理。logrotate 程序不但可以压缩日志文件，减少存储空间，还可以将日志发送到指定 E-mail，方便管理员及时查看日志。
+    ```
+
+2. logrotate
+
+    ```shell
+    logrotate 的主要配置文件是 /etc/logrotate.conf
+    /etc/logrotate.d 目录是对 /etc/logrotate.conf 的补充，或者说为了不使 /etc/logrotate.conf 过大而设置。
+    
+    cat /etc/logrotate.conf
+    
+    # see "man logrotate" for details  //可以查看帮助文档
+    # rotate log files weekly
+    weekly                             //设置每周转储一次
+    # keep 4 weeks worth of backlogs
+    rotate 4                           //最多转储4次
+    # create new (empty) log files after rotating old ones
+    create                             //当转储后文件不存储时创建它
+    # uncomment this if you want your log files compressed
+    # compress                          //以压缩方式转储
+    # RPM packages drop log rotation information into this directory
+    include /etc/logrotate.d           //其他日志文件的转储方式，包含在该目录下
+    # no packages own wtmp -- we'll rotate them here
+    /var/log/wtmp {                    //设置/var/log/wtmp日志文件的转储参数
+        monthly                        //每月转储
+        create 0664 root utmp          //转储后文件不存在时创建它，文件所有者为root，所属组为utmp，对应的权限为0664
+        rotate 1                       //最多转储一次
+    }
+    ```
+
+    ```shell
+    建议将 /etc/logrotate.conf 作为默认配置文件，第三方程序在 /etc/logrotate.d 目录下自定义配置文件。
+    logrotate 也可以作为命令直接运行来修改配置文件。
+    ```
+
+    ```shell
+    logrotate [选项] [参数]
+    
+    -? --help		在线帮助；
+    -d --debug	详细显示指令执行过程，便于排错或了解程序执行的情况；
+    -f --force	强行启动记录文件维护操作，纵使logrotate指令认为没有需要亦然；
+    -s<状态文件> 或 --state=<状态文件> 使用指定的状态文件；
+    -v 或 --version 显示指令执行过程；
+    -usage 显示指令基本用法。
+    ```
+
+    
+
+#### 用户日志
+
+1. 用户相关日志文件
+
+    ```shell
+    /var/log/wtmp			记录所有的登入和登出
+    /var/log/lastlog	记录每个用户最后的登入信息
+    /var/log/btmp			记录错误的登入尝试
+    ```
+
+2. last 相关命令
+
+    ```shell
+    # 查看所有登录过系统的用户和IP
+    last [options]
+    # 说明
+    -R 省略 hostname 的栏位
+    -num 展示前 <num> 个
+    username 展示 username 的登入讯息
+    tty 限制登入讯息包含终端机代号
+    
+    # 记录每个用户最后的登入信息
+    lastlog
+    
+    # 查看用户尝试登录系统信息
+    lastb
+    ```
+
+    
+
+    
+
+#### 开机日志
+
+1. dmesg 说明
+
+    ```txt
+    dmesg 命令被用于检查和控制内核的环形缓冲区。kernel 会将开机信息存储在 ring buffer 中。您若是开机时来不及查看信息，可利用dmesg 来查看。开机信息保存在 /var/log/dmesg 文件里。
+    ```
+
+2. dmesg 命令
+
+    ```shell
+    dmesg [选项]
+    
+    # 说明
+    -c 显示信息后，清除 ring buffer 中的内容；
+    -s<缓冲区大小> 预设置为8196，刚好等于 ring buffer 的大小；
+    -n 设置记录信息的层级。
+    ```
+
+3. dmseg 实例
+
+    ```shell
+    # 查看 硬盘启动日志
+    dmesg | grep sda
+    
+    [    2.442555] sd 0:0:0:0: [sda] 488281250 512-byte logical blocks: (250 GB/232 GiB)
+    [    2.442590] sd 0:0:0:0: [sda] Write Protect is off
+    [    2.442592] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
+    [    2.442607] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+    [    2.447533]  sda: sda1
+    [    2.448503] sd 0:0:0:0: [sda] Attached SCSI disk
+    ```
+
+    
+
+
 
 ### 备份与恢复
 
+#### dump
 
+1. dump 介绍
+
+    ```shell
+    dump 用于备份 ext2 或者 ext3 文件系统。可将目录或整个文件系统备份至指定的设备，或备份成一个大文件。
+    ```
+
+2. dump 命令
+
+    ```shell
+    dump [-cnu][-0123456789][-b <区块大小>][-B <区块数目>][-d <密度>][-f <设备名称>][-h <层级>][-s <磁带长度>][-T <日期>][目录或文件系统] 或 dump [-wW]
+    
+    # 参数说明
+    -0123456789 　备份的层级。
+    -b<区块大小> 　指定区块的大小，单位为KB。
+    -B<区块数目> 　指定备份卷册的区块数目。
+    -c 　修改备份磁带预设的密度与容量。
+    -d<密度> 　设置磁带的密度。单位为BPI。
+    -f<设备名称> 　指定备份设备。
+    -h<层级> 　当备份层级等于或大于指定的层级时，将不备份用户标示为"nodump"的文件。
+    -n 　当备份工作需要管理员介入时，向所有"operator"群组中的使用者发出通知。
+    -s<磁带长度> 　备份磁带的长度，单位为英尺。
+    -T<日期> 　指定开始备份的时间与日期。
+    -u 　备份完毕后，在/etc/dumpdates中记录备份的文件系统，层级，日期与时间等。
+    -w 　与-W类似，但仅显示需要备份的文件。
+    -W 　显示需要备份的文件及其最后一次备份的层级，时间与日期。
+    ```
+
+3. dump 实例
+
+    ```shell
+    # 备份文件到磁带
+    dump -0 -u /dev/tape /home/
+    # 将/home目录所有内容备份到/tmp/homeback.bak文件中
+    # 备份层级为0并在/etc/dumpdates中记录相关信息
+    dump -0u -f /tmp/homeback.bak /home
+    # 将/home目录所有内容备份到/tmp/homeback.bak文件中
+    # 备份层级为1（只备份上次使用层次0备份后发生过改变的数据）并在/etc/dumpdates中记录相关信息
+    dump -1u -f /tmp/homeback.bak /home
+    ```
+
+    
+
+#### restore
+
+1. restore 介绍
+
+    ```shell
+    restore 是 dump 命令的逆过程，用于还原 dump 命令生成的备份文件。倾倒操作可用来备份文件，而还原操作则是写回这些已备份的文件。
+    ```
+
+2. restore 命令
+
+    ```shell
+    restore [参数...]
+    
+    # 参数说明
+    -b<区块大小> 设置区块大小，单位是Byte。
+    -c 不检查dump操作的备份格式，仅准许读取使用旧格式的备份文件。
+    -C 使用对比模式，将备份的文件与现行的文件相互对比。
+    -D<文件系统> 允许用户指定文件系统的名称。
+    -f<备份文件> 从指定的文件中读取备份数据，进行还原操作。
+    -h 仅解出目录而不包括与该目录相关的所有文件。
+    -i 使用互动模式，在进行还原操作时，restore指令将依序询问用户。
+    -m 解开符合指定的inode编号的文件或目录而非采用文件名称指定。
+    -r 进行还原操作。
+    -R 全面还原文件系统时，检查应从何处开始进行。
+    -s<文件编号> 当备份数据超过一卷磁带时，您可以指定备份文件的编号。
+    -t 指定文件名称，若该文件已存在备份文件中，则列出它们的名称。
+    -v 显示指令执行过程。
+    -x 设置文件名称，且从指定的存储媒体里读入它们，若该文件已存在在备份文件中，则将其还原到文件系统内。
+    -y 不询问任何问题，一律以"yes"回答并继续执行指令。
+    ```
+
+    
+
+### 系统检查
+
+#### chkconfig
+
+1. chkconfig 命令
+
+    ```shell
+    chkconfig [--add][--del][--list][系统服务] 或 chkconfig [--level <等级代号>][系统服务][on/off/reset]
+    
+    # 参数说明
+    --add 　增加所指定的系统服务，让 chkconfig 指令得以管理它，并同时在系统启动的叙述文件内增加相关数据。
+    --del 　删除所指定的系统服务，不再由 chkconfig 指令管理，并同时在系统启动的叙述文件内删除相关数据。
+    --level<等级代号> 　指定读系统服务要在哪一个执行等级中开启或关毕。
+    ```
+
+2. chkconfig 实例
+
+    ```shell
+    # 列出 chkconfig 查看的所有服务
+    chkconfig --list
+    
+    # 开启查询 telnet 服务
+    chkconfig telnet on
+    # chkconfig --list
+    # 关闭查询 telnet 服务
+    chkconfig telnet off
+    # chkconfig --list
+    ```
+
+    
 
 
 
