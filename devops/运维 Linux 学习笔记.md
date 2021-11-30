@@ -725,10 +725,10 @@
    obs=bytes			一次输出bytes个字节，即指定一个块大小为bytes个字节。
    bs=bytes			同时设置读入/输出的块大小为bytes个字节。
    cbs=bytes			一次转换bytes个字节，即指定转换缓冲区大小。
-   skip=blocks		从输入文件开头跳过blocks个块后再开始复制。
-   seek=blocks		从输出文件开头跳过blocks个块后再开始复制。
-   count=blocks	仅拷贝blocks个块，块大小等于ibs指定的字节数。
-   conv=<关键字>	关键字有11种
+   skip=blocks			从输入文件开头跳过blocks个块后再开始复制。
+   seek=blocks			从输出文件开头跳过blocks个块后再开始复制。
+   count=blocks			仅拷贝blocks个块，块大小等于ibs指定的字节数。
+   conv=<关键字>			关键字有11种
    	conversion：用指定的参数转换文件。
     	ascii：转换ebcdic为ascii
     	ebcdic：转换ascii为ebcdic
