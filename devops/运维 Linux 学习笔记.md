@@ -17,6 +17,9 @@
     - [文件命令](####文件命令) [文件夹命令](####文件夹命令)  [目录命令](####目录命令)
     - [磁盘命令](####磁盘命令) [网络命令](####网络命令) [系统命令](####系统命令)
 - [Linux 实操](##Linux-实操)
+  - [环境变量](###环境变量)
+    - [配置文件](####配置文件) [配置方法](####配置方法)
+  
   - [权限管理](###权限管理)
     - [组管理](####组管理) [权限控制](####权限控制)
   - [定时任务](###定时任务)
@@ -33,6 +36,7 @@
     - 脚本格式 变量 环境变量 预定义变量
     - 位置参数 运算符 条件判断 流程判断
     - 循环 控制台输入 函数
+  
 - [Linux 系统](##Linux-系统)
   - [防火墙](###防火墙)
     - [iptables](####iptables) [firewalld](####firewalld)
@@ -862,6 +866,142 @@
 
 
 ## Linux 实操
+
+### 环境变量
+
+#### 配置文件
+
+1. 环境变量配置文件
+
+    ```shell
+    # 按加载顺序 排序
+    /etc/environment
+    /etc/profile
+    /etc/bash.bashrc
+    /etc/profile.d/test.sh
+    ~/.profile
+    ~/.bashrc
+    ```
+
+2. 读取逻辑
+
+    ```shell
+    /.profile  # 只在用户登录的时候读取一次。
+    /.bashrc  # 在每次运行 Shell 脚本的时候读取一次。
+    ```
+
+3. 环境变量分类
+
+    ```shell
+    用户级别环境变量 定义文件：~/.bashrc、~/.profile（部分系统为：~/.bash_profile）
+    系统级别环境变量 定义文件：/etc/bashrc、/etc/profile（部分系统为：/etc/bash_profile）、/etc/environment
+    
+    # 另外在用户环境变量中，系统会首先读取 ~/.bash_profile（或者 ~/.profile）文件。
+    # 如果没有该文件则读取 ~/.bash_login，根据这些文件中内容再去读取 ~/.bashrc。
+    ```
+
+4. export 命令
+
+    ```shell
+    export [-fnp][变量名称]=[变量设置值]
+    # 参数说明
+    -f 　代表[变量名称]中为函数名称。
+    -n 　删除指定的变量。变量实际上并未删除，只是不会输出到后续指令的执行环境中。
+    -p 　列出所有的shell赋予程序的环境变量。
+    
+    # 查看所有环境变量
+    export
+    # 查看当前的 PATH 环境变量
+    echo $PATH
+    ```
+
+    
+
+#### 配置方法
+
+1. export 直接修改
+
+    ```shell
+    # 添加 MySQL 变量
+    export PATH=/home/hombin/mysql/bin:$PATH
+    export PATH=$PATH:/home/hombin/mysql/bin
+    
+    # 使用说明
+    生效时间：立即生效
+    生效期限：当前终端有效，窗口关闭后无效
+    生效范围：仅对当前用户有效
+    注意事项：需要加上原来的配置，即 $PATH 部分，避免覆盖原来配置
+    ```
+
+2. 配置 ~/.bashrc
+
+    ```shell
+    vim ~/.bashrc
+    export PATH=$PATH:/home/hombin/mysql/bin
+    
+    # 使用说明
+    生效时间：使用相同的用户打开新的终端时生效，或者手动 source ~/.bashrc 生效
+    生效期限：永久有效
+    生效范围：仅对当前用户有效
+    如果有后续的环境变量加载文件覆盖了 PATH 定义，则可能不生效
+    ```
+
+3. 配置 ~/.bash_profile
+
+    ```shell
+    vim ~/.bash_profile
+    export PATH=$PATH:/home/hombin/mysql/bin
+    
+    # 使用说明
+    生效时间：使用相同的用户打开新的终端时生效，或者手动 source ~/.bash_profile 生效
+    生效期限：永久有效
+    生效范围：仅对当前用户有效
+    如果没有 ~/.bash_profile 文件，则可以编辑 ~/.profile 文件或者新建一个
+    ```
+
+4. 配置 /etc/bashrc
+
+    ```shell
+    # 如果 /etc/bashrc 文件不可编辑，需要修改为可编辑（写入系统配置需要 root 权限）
+    chmod -v u+w /etc/bashrc
+    vim /etc/bashrc
+    export PATH=$PATH:/home/hombin/mysql/bin
+    
+    # 使用说明
+    生效时间：新开终端生效，或者手动 source /etc/bashrc 生效
+    生效期限：永久有效
+    生效范围：对所有用户有效
+    ```
+
+5. 配置 /etc/profile
+
+    ```shell
+    # 如果 /etc/profile 文件不可编辑，需要修改为可编辑（写入系统配置需要 root 权限）
+    chmod -v u+w /etc/profile
+    vim /etc/profile
+    export PATH=$PATH:/home/hombin/mysql/bin
+    
+    # 使用说明
+    生效时间：新开终端生效，或者手动 source /etc/profile 生效
+    生效期限：永久有效
+    生效范围：对所有用户有效
+    ```
+
+6. 配置 /etc/environment
+
+    ```shell
+    # 如果 /etc/environment 文件不可编辑，需要修改为可编辑（写入系统配置需要 root 权限）
+    chmod -v u+w /etc/environment
+    vim /etc/environment
+    export PATH=$PATH:/home/hombin/mysql/bin
+    
+    # 使用说明
+    生效时间：新开终端生效，或者手动 source /etc/environment 生效
+    生效期限：永久有效
+    生效范围：对所有用户有效
+    ```
+
+
 
 ### 权限管理
 
@@ -2157,7 +2297,6 @@
     PREROUTING链		用于目标地址转换（DNAT）
     POSTOUTING链		用于源地址转换（SNAT）
     ```
-
 
 5. iptables 实例
 
