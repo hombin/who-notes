@@ -712,7 +712,7 @@
 3. dd
 
    ```shell
-   # dd 可从标准输入或文件中读取数据，根据指定的格式来转换数据，再输出到文件、设备或标准输出
+   #	dd 可从标准输入或文件中读取数据，根据指定的格式来转换数据，再输出到文件、设备或标准输出
    
    # 在 Linux 下制作启动盘
    dd if=boot.img of=/dev/fd0 bs=1440k 
@@ -730,17 +730,17 @@
    count=blocks	仅拷贝blocks个块，块大小等于ibs指定的字节数。
    conv=<关键字>	关键字有11种
    	conversion：用指定的参数转换文件。
-     ascii：转换ebcdic为ascii
-     ebcdic：转换ascii为ebcdic
-     ibm：转换ascii为alternate ebcdic
-     block：把每一行转换为长度为cbs，不足部分用空格填充
-     unblock：使每一行的长度都为cbs，不足部分用空格填充
-     lcase：把大写字符转换为小写字符
-     ucase：把小写字符转换为大写字符
-     swap：交换输入的每对字节
-     noerror：出错时不停止
-     notrunc：不截短输出文件
-     sync：将每个输入块填充到ibs个字节，不足部分用空（NUL）字符补齐。
+    	ascii：转换ebcdic为ascii
+    	ebcdic：转换ascii为ebcdic
+    	ibm：转换ascii为alternate ebcdic
+    	block：把每一行转换为长度为cbs，不足部分用空格填充
+    	unblock：使每一行的长度都为cbs，不足部分用空格填充
+    	lcase：把大写字符转换为小写字符
+    	ucase：把小写字符转换为大写字符
+    	swap：交换输入的每对字节
+    	noerror：出错时不停止
+    	notrunc：不截短输出文件
+    	sync：将每个输入块填充到ibs个字节，不足部分用空（NUL）字符补齐。
    ```
 
 
@@ -1169,7 +1169,7 @@
    5 个 * 的位置分别代表了不同时间单位，由左至右依次为，
    
    分，取值范围 0 ~ 59
-   时，0 ~23
+   时，0 ~ 23
    天，1 ~ 31
    月，1 ~ 12，部分实现支持使用名称 jan, feb, mar …
    周，0 ~ 6，其中星期天为 0，部分实际支持使用名称，sun, mon, tue …
@@ -1326,7 +1326,7 @@
     fdisk /dev/vdb
     
     # m打印菜单
-    # n新建分区
+    # 	n新建分区
     # 		p选择主分区
     # 		e选择扩展分区
     # 			1选择分区号
@@ -2732,6 +2732,8 @@
     ```
 
     
+
+
 
 
 
