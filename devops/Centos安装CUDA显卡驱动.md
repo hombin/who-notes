@@ -137,9 +137,9 @@
     NVIDIA-Linux-x86_64-510.47.03.run
     
     # 卸载
-    NVIDIA-Linux-x86_64-510.47.03.run --uninstall
+    ./NVIDIA-Linux-x86_64-510.47.03.run --uninstall
     # 安装
-    NVIDIA-Linux-x86_64-510.47.03.run --install
+    ./NVIDIA-Linux-x86_64-510.47.03.run
     # 验证
     nvidia-smi
     ```
