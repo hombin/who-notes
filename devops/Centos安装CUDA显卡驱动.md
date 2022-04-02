@@ -1,4 +1,4 @@
-# CUDA & 显卡驱动安装
+# CUDA 显卡驱动安装
 
 
 
@@ -107,8 +107,6 @@
     nvidia-smi
     ```
 
-    
-
 5. 根据 驱动版本 安装 CUDA
 
     ```shell
@@ -127,20 +125,23 @@
     sudo yum -y install cuda-drivers
     ```
 
-6. 添加 环境变量
+6. 驱动重装方法 *
 
     ```shell
-    vim /etc/prpfile
-    ```
-
-    ```shell
-    # CUDA PATH
-    export PATH=/usr/local/cuda-11/bin:$PATH
-    export LD_LIBRARY_PATH=/usr/local/cuda-11/lib64:$LD_LIBRARY_PATH
-    ```
-
-    ```shell
-    source /etc/profile
+    # 如果是 RPM 或 PPA 安装的 cuda 有可能出现原有 显卡驱动 不可用的情况
+    # 需要重新下载安装即可
+    nvidia-smi
+    # bash: nvidia-smi: commmand not found
+    
+    # 官网下载 显卡对应驱动程序
+    NVIDIA-Linux-x86_64-510.47.03.run
+    
+    # 卸载
+    NVIDIA-Linux-x86_64-510.47.03.run --uninstall
+    # 安装
+    NVIDIA-Linux-x86_64-510.47.03.run --install
+    # 验证
+    nvidia-smi
     ```
 
     
